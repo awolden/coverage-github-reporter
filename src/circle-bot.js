@@ -2,7 +2,7 @@
 const { basename, join } = require('path')
 const { execSync } = require('child_process')
 
-ENV = {
+const ENV = {
   // Required ENV variables
   auth: 'GH_AUTH_TOKEN',
   buildNum: 'CIRCLE_BUILD_NUM',
@@ -11,7 +11,7 @@ ENV = {
   pr: 'CI_PULL_REQUEST',
   repo: 'CIRCLE_PROJECT_REPONAME',
   sha1: 'CIRCLE_SHA1',
-  username: 'CIRCLE_PROJECT_USERNAME',
+  username: 'CIRCLE_PROJECT_USERNAME'
 
   // Aux variables, not in ENV. See Bot.create
   // commitMessage : ''
@@ -27,10 +27,10 @@ const exec = (command, options) =>
 
 // Syncronously POST to `url` with `data` content
 class Bot {
-  static create(options = {}) {
+  static create (options = {}) {
     const missing = []
     Object.keys(ENV).forEach(key => {
-      const name = ENV[key];
+      const name = ENV[key]
       if (!process.env[name]) missing.push(name)
       ENV[key] = process.env[name]
     })
@@ -43,16 +43,16 @@ class Bot {
     ENV.circleDomain = options.circleDomain || 'circleci.com'
     return new Bot(ENV)
   }
-  
-  constructor(env) {
-    this.env = env;
+
+  constructor (env) {
+    this.env = env
     this.artifactUrl = (artifactPath) =>
       `${env.buildUrl}/artifacts/0/${env.home}/${env.repo}/${artifactPath}`
 
     this.artifactLink = (artifactPath, text) =>
         `<a href='${this.artifactUrl(artifactPath)}' target='_blank'>${text}</a>`
 
-    this.githubUrl = (path) => 
+    this.githubUrl = (path) =>
         `https://${env.githubDomain}${join('/', env.githubBasePath, path)}`
 
     this.githubRepoUrl = (path) =>
@@ -65,20 +65,13 @@ class Bot {
         this.curl(this.githubRepoUrl(`commits/${sha1}/comments`), JSON.stringify({body}))
 
     this.comment = (body) => {
-      if (env.prNumber)
-          return this.commentIssue(env.prNumber, body)
-      else
-          return this.commentCommit(env.sha1, body)
+      if (env.prNumber) { return this.commentIssue(env.prNumber, body) } else { return this.commentCommit(env.sha1, body) }
     }
 
     this.curl = (url, data, skipAuth) => {
       const auth = skipAuth ? '' : `-H "Authorization: token ${env.auth}"`
-      if (data)
-        return exec(`curl -H 'Content-Type: application/json' ${auth} --silent --data @- ${url}`, { input: data })
-      else 
-        return exec(`curl -H 'Content-Type: application/json' ${auth} --silent ${url}`)
+      if (data) { return exec(`curl -H 'Content-Type: application/json' ${auth} --silent --data @- ${url}`, { input: data }) } else { return exec(`curl -H 'Content-Type: application/json' ${auth} --silent ${url}`) }
     }
-
   }
 }
 module.exports = Bot

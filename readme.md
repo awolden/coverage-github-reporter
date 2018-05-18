@@ -87,9 +87,12 @@ The `report-coverage` CLI has some options to customize behavior:
 ```
   Options:
 
-    -b, --branch [value]         Base branch to use if not PR (defaults to "master")
-    -j, --coverage-json [value]  Relative path to istanbul coverage JSON (defaults to "coverage/coverage-final.json")
-    -r, --coverage-root [value]  Relative path to coverage html root (for artifact links) (defaults to "coverage/lcov-report")
-    -h, --help                   Output usage information
-    -v, --version                Output the version number
+    -b, --branch [value]            Base branch to use if not PR (defaults to "master")
+    -d, --circle-domain [value]     Circle Domain (defaults to "circleci.com")
+    -c, --coverage-html [value]     Relative path to coverage html root (for artifact links) (defaults to "coverage/lcov-report")
+    -j, --coverage-json [value]     Relative path to istanbul coverage JSON (defaults to "coverage/coverage-final.json")
+    -p, --github-base-path [value]  Github Base Path (defaults to "/")
+    -g, --github-domain [value]     Github Domain (defaults to "api.github.com")
+    -h, --help                      Output usage information
+    -v, --version                   Output the version number
 ```
