@@ -34,9 +34,12 @@ exports.postComment = function postComment ({
   coverageJsonFilename = 'coverage/coverage-final.json',
   coverageHtmlRoot = 'coverage/lcov-report',
   defaultBaseBranch = 'master',
+  githubUrl = 'api.github.com'
   root = process.cwd()
 }) {
-  const bot = Bot.create()
+  const bot = Bot.create({
+    githubDomain: githubUrl
+  })
 
   const coverage = parseFile(root, resolve(root, coverageJsonFilename))
 
