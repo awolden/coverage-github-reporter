@@ -1,6 +1,5 @@
 // circle-github-bot is pretty gnarly, ideally we'll swap it out
-const Bot = require('circle-github-bot')
-const { curl } = require('./curl')
+const Bot = require('./circle-bot')
 const { coverageJsonToReport } = require('./coverage/parse')
 
 // Workaround for circle-github-bot failing if environment variables are not found
@@ -22,17 +21,17 @@ if (!process.env.CIRCLE_ARTIFACTS) {
 const BUILD_RETRIEVAL_LIMIT = 30
 
 Bot.prototype.getPullRequest = function () {
-  return JSON.parse(curl(this.githubRepoUrl(`pulls/${this.env.prNumber}`)))
+  return JSON.parse(this.curl(this.githubRepoUrl(`pulls/${this.env.prNumber}`)))
 }
 Bot.prototype.circleProjectUrl = function (path) {
   const project = `${process.env.CIRCLE_PROJECT_USERNAME}/${process.env.CIRCLE_PROJECT_REPONAME}`
   return `https://${process.env.CIRCLE_CI_API_TOKEN}:@circleci.com/api/v1.1/project/github/${project}/${path}`
 }
 Bot.prototype.latestBranchBuilds = function (branch, count = 30) {
-  return JSON.parse(curl(this.circleProjectUrl(`tree/${branch}?limit=${count}`)))
+  return JSON.parse(this.curl(this.circleProjectUrl(`tree/${branch}?limit=${count}`)))
 }
 Bot.prototype.artifacts = function (buildNum) {
-  return JSON.parse(curl(this.circleProjectUrl(`${buildNum}/artifacts`)))
+  return JSON.parse(this.curl(this.circleProjectUrl(`${buildNum}/artifacts`)))
 }
 
 Bot.prototype.oldArtifactUrl = Bot.prototype.artifactUrl
@@ -43,7 +42,7 @@ Bot.prototype.artifactUrl = function (path) {
     .replace(`${process.env.HOME}/${process.env.CIRCLE_PROJECT_REPONAME}/`, '')
 }
 Bot.prototype.getJsonArtifact = function (url) {
-  return JSON.parse(curl(`${url}?circle-token=${process.env.CIRCLE_CI_API_TOKEN}`))
+  return JSON.parse(this.curl(`${url}?circle-token=${process.env.CIRCLE_CI_API_TOKEN}`))
 }
 
 Bot.prototype.getBaseBranch = function (defaultBaseBranch) {

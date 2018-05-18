@@ -5,13 +5,15 @@ const args = require('args')
 args
   .option(['j', 'coverage-json'], 'Relative path to istanbul coverage JSON', 'coverage/coverage-final.json')
   .option(['c', 'coverage-html'], 'Relative path to coverage html root (for artifact links)', 'coverage/lcov-report')
-  .option(['g', 'github-url'], 'Github Url', 'api.github.com')
+  .option(['g', 'github-domain'], 'Github Domain', 'api.github.com')
+  .option(['p', 'github-base-path'], 'Github Base Path', '/')
   .option(['b', 'branch'], 'Base branch to use if not PR', 'master')
 
 const {
   coverageJson,
   coverageHtml,
-  githubUrl,
+  githubDomain,
+  githubBasePath,
   branch
 } = args.parse(process.argv)
 
@@ -22,7 +24,8 @@ try {
     root: process.cwd(),
     coverageJsonFilename: coverageJson,
     coverageHtmlRoot: coverageHtml,
-    githubUrl,
+    githubDomain,
+    githubBasePath,
     defaultBaseBranch: branch
   }
   const url = postComment(params)
