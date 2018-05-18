@@ -4,7 +4,6 @@ const { execSync } = require('child_process')
 
 ENV = {
   // Required ENV variables
-  artifacts : 'CIRCLE_ARTIFACTS',
   auth: 'GH_AUTH_TOKEN',
   buildNum: 'CIRCLE_BUILD_NUM',
   buildUrl: 'CIRCLE_BUILD_URL',
