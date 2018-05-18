@@ -36,11 +36,13 @@ exports.postComment = function postComment ({
   defaultBaseBranch = 'master',
   githubDomain = 'api.github.com',
   githubBasePath = '/',
+  circleDomain = 'circleci.com',
   root = process.cwd()
 }) {
   const bot = Bot.create({
     githubDomain,
-    githubBasePath
+    githubBasePath,
+    circleDomain
   })
 
   const coverage = parseFile(root, resolve(root, coverageJsonFilename))

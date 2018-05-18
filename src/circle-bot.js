@@ -8,7 +8,7 @@ ENV = {
   buildNum: 'CIRCLE_BUILD_NUM',
   buildUrl: 'CIRCLE_BUILD_URL',
   home: 'HOME',
-  pretty: 'CI_PULL_REQUEST',
+  pr: 'CI_PULL_REQUEST',
   repo: 'CIRCLE_PROJECT_REPONAME',
   sha1: 'CIRCLE_SHA1',
   username: 'CIRCLE_PROJECT_USERNAME',
@@ -18,6 +18,7 @@ ENV = {
   // prNumber      : ''
   // githubDomain  : 'api.github.com'
   // githubBasePath  : '/api/v3'
+  // circleDomain: 'circleci.com'
 }
 
 // Synchronously execute command and return trimmed stdout as string
@@ -39,11 +40,12 @@ class Bot {
     ENV.prNumber = basename(ENV.pr)
     ENV.githubDomain = options.githubDomain || 'api.github.com'
     ENV.githubBasePath = options.githubBasePath || ''
+    ENV.circleDomain = options.circleDomain || 'circleci.com'
     return new Bot(ENV)
   }
   
   constructor(env) {
-
+    this.env = env;
     this.artifactUrl = (artifactPath) =>
       `${env.buildUrl}/artifacts/0/${env.home}/${env.repo}/${artifactPath}`
 
@@ -51,10 +53,10 @@ class Bot {
         `<a href='${this.artifactUrl(artifactPath)}' target='_blank'>${text}</a>`
 
     this.githubUrl = (path) => 
-        `https://${env.githubDomain}/${join(env.githubBasePath, path)}`
+        `https://${env.githubDomain}${join('/', env.githubBasePath, path)}`
 
     this.githubRepoUrl = (path) =>
-        this.githubUrl(`repos/#{@env.username}/${env.repo}/${path}`)
+        this.githubUrl(`repos/${env.username}/${env.repo}/${path}`)
 
     this.commentIssue = (number, body) =>
         this.curl(this.githubRepoUrl(`issues/${number}/comments`), JSON.stringify({body}))
@@ -69,8 +71,13 @@ class Bot {
           return this.commentCommit(env.sha1, body)
     }
 
-    this.curl = (url, data) =>
-      exec(`curl  - H "Authorization: token ${env.auth}" --silent --data @- ${url}`, {input: data})
+    this.curl = (url, data) => {
+      if (data)
+        return exec(`curl -H 'Content-Type: application/json' -H "Authorization: token ${env.auth}" --silent --data @- ${url}`, { input: data })
+      else 
+        return exec(`curl -H 'Content-Type: application/json' -H "Authorization: token ${env.auth}" --silent ${url}`)
+    }
+
   }
 }
 module.exports = Bot

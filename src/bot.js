@@ -25,7 +25,7 @@ Bot.prototype.getPullRequest = function () {
 }
 Bot.prototype.circleProjectUrl = function (path) {
   const project = `${process.env.CIRCLE_PROJECT_USERNAME}/${process.env.CIRCLE_PROJECT_REPONAME}`
-  return `https://${process.env.CIRCLE_CI_API_TOKEN}:@circleci.com/api/v1.1/project/github/${project}/${path}`
+  return `https://${process.env.CIRCLE_CI_API_TOKEN}:@${this.env.circleDomain}/api/v1.1/project/github/${project}/${path}`
 }
 Bot.prototype.latestBranchBuilds = function (branch, count = 30) {
   return JSON.parse(this.curl(this.circleProjectUrl(`tree/${branch}?limit=${count}`)))
