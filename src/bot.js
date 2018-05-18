@@ -28,10 +28,10 @@ Bot.prototype.circleProjectUrl = function (path) {
   return `https://${process.env.CIRCLE_CI_API_TOKEN}:@${this.env.circleDomain}/api/v1.1/project/github/${project}/${path}`
 }
 Bot.prototype.latestBranchBuilds = function (branch, count = 30) {
-  return JSON.parse(this.curl(this.circleProjectUrl(`tree/${branch}?limit=${count}`)))
+  return JSON.parse(this.curl(this.circleProjectUrl(`tree/${branch}?limit=${count}`), undefined, true))
 }
 Bot.prototype.artifacts = function (buildNum) {
-  return JSON.parse(this.curl(this.circleProjectUrl(`${buildNum}/artifacts`)))
+  return JSON.parse(this.curl(this.circleProjectUrl(`${buildNum}/artifacts`), undefined, true))
 }
 
 Bot.prototype.oldArtifactUrl = Bot.prototype.artifactUrl

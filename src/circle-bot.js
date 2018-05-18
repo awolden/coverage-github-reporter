@@ -71,11 +71,12 @@ class Bot {
           return this.commentCommit(env.sha1, body)
     }
 
-    this.curl = (url, data) => {
+    this.curl = (url, data, skipAuth) => {
+      const auth = skipAuth ? '' : `-H "Authorization: token ${env.auth}"`
       if (data)
-        return exec(`curl -H 'Content-Type: application/json' -H "Authorization: token ${env.auth}" --silent --data @- ${url}`, { input: data })
+        return exec(`curl -H 'Content-Type: application/json' ${auth} --silent --data @- ${url}`, { input: data })
       else 
-        return exec(`curl -H 'Content-Type: application/json' -H "Authorization: token ${env.auth}" --silent ${url}`)
+        return exec(`curl -H 'Content-Type: application/json' ${auth} --silent ${url}`)
     }
 
   }
