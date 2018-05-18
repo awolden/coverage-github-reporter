@@ -49,7 +49,6 @@ Bot.prototype.getBaseBranch = function (defaultBaseBranch) {
   // Get base branch from PR, default to master
   if (process.env.CI_PULL_REQUEST) {
     console.log(`PR build ${process.env.CI_PULL_REQUEST}`)
-    console.log(this.getPullRequest())
     const branch = this.getPullRequest().base.ref
     console.log(`Got PR base branch "${branch}"`)
     return branch
